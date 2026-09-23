@@ -1,0 +1,21 @@
+# Local / development profile overrides.
+# Activate with: SPRING_PROFILES_ACTIVE=local (default in application.yml)
+
+spring:
+  jpa:
+    show-sql: true
+
+# Dev OTP: fixed code for manual testing; never use in production
+app:
+  security:
+    customer:
+      otp:
+        dev-fixed-otp: "123456"
+        dev-log-otp: true
+  # Checkout charges: inherit V1 FIXED shipping ₹20 + COD ₹20 + tax ZERO from application.yml
+  # (Do not override to ZERO — those were temporary test stubs before Step 25.)
+
+logging:
+  level:
+    org.springframework.web: INFO
+    org.flywaydb: INFO

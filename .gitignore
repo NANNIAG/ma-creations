@@ -1,0 +1,22 @@
+# Root
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.local
+*.iml
+.idea/
+.vscode/
+
+# Backend
+backend/ma-creations-api/target/
+backend/ma-creations-api/.env
+
+# Frontend
+frontend/ma-creations-web/node_modules/
+frontend/ma-creations-web/dist/
+frontend/ma-creations-web/.env.local
+
+# Uploads
+backend/ma-creations-api/uploads/
+uploads/
