@@ -26,7 +26,8 @@ spring:
       max-request-size: 12MB
 
 server:
-  port: ${SERVER_PORT:8080}
+  # Railway injects PORT; keep SERVER_PORT for local overrides.
+  port: ${PORT:${SERVER_PORT:8080}}
 
 app:
   cors:

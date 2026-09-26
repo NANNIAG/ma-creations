@@ -1,0 +1,23 @@
+# UAT profile for Railway (and similar hosts).
+# Activate with: SPRING_PROFILES_ACTIVE=uat
+#
+# Do NOT use profile "local" on Railway — it enables fixed OTP 123456 and OTP logging.
+
+spring:
+  jpa:
+    show-sql: false
+
+app:
+  security:
+    customer:
+      otp:
+        # Empty = random hashed OTP (DevOtpService still logs only if DEV_LOG true)
+        dev-fixed-otp: ""
+        dev-log-otp: false
+
+logging:
+  level:
+    root: INFO
+    com.macreations: INFO
+    org.flywaydb: INFO
+    org.hibernate.SQL: WARN
