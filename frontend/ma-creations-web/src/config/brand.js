@@ -8,8 +8,14 @@ export const brandFontFamily =
   import.meta.env.VITE_BRAND_FONT_FAMILY?.trim() ||
   '"Inter", "Montserrat", system-ui, sans-serif'
 
-/** Optional logo URL, e.g. /branding/logo.svg — leave empty for text wordmark. */
-export const brandLogoUrl = import.meta.env.VITE_BRAND_LOGO_URL?.trim() || ''
+/**
+ * Logo path under public/logo/. Override with VITE_BRAND_LOGO_URL if needed.
+ * BrandMark falls back to the text wordmark when the file is missing.
+ */
+export const DEFAULT_BRAND_LOGO_URL = '/logo/logo.png'
+
+export const brandLogoUrl =
+  import.meta.env.VITE_BRAND_LOGO_URL?.trim() || DEFAULT_BRAND_LOGO_URL
 
 export const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER?.trim() || ''
 
@@ -54,26 +60,46 @@ export function isInstagramConfigured() {
 }
 
 /**
- * Optional map: { "hydration-drinkware": "/categories/hydration-drinkware.jpg", ... }
- * or by numeric id string: { "1": "/categories/1.jpg" }
+ * Default category tile images under public/categories/.
+ * Keys: numeric id (seed order) and DB slug. CategoryCard falls back if missing.
+ */
+export const DEFAULT_CATEGORY_IMAGE_MAP = {
+  1: '/categories/hydration.png',
+  'hydration-drinkware': '/categories/hydration.png',
+  2: '/categories/lunch.png',
+  'lunch-meal-prep': '/categories/lunch.png',
+  3: '/categories/kitchen-gadgets.png',
+  'kitchen-gadgets-prep': '/categories/kitchen-gadgets.png',
+  4: '/categories/storage.png',
+  'storage-kitchenware': '/categories/storage.png',
+  5: '/categories/home-decor.png',
+  'home-decor-festivity': '/categories/home-decor.png',
+}
+
+/**
+ * Optional map override: { "hydration-drinkware": "/categories/hydration.png", ... }
+ * or by numeric id string: { "1": "/categories/hydration.png" }
  */
 export function getCategoryImageMap() {
   const raw = import.meta.env.VITE_CATEGORY_IMAGE_MAP_JSON?.trim()
   if (!raw) {
-    return {}
+    return { ...DEFAULT_CATEGORY_IMAGE_MAP }
   }
   try {
     const parsed = JSON.parse(raw)
-    return parsed && typeof parsed === 'object' ? parsed : {}
+    if (!parsed || typeof parsed !== 'object') {
+      return { ...DEFAULT_CATEGORY_IMAGE_MAP }
+    }
+    return { ...DEFAULT_CATEGORY_IMAGE_MAP, ...parsed }
   } catch {
-    return {}
+    return { ...DEFAULT_CATEGORY_IMAGE_MAP }
   }
 }
 
 /**
  * Resolve a local static category image without a new media API.
- * Prefer VITE_CATEGORY_IMAGE_MAP_JSON entries. If unset, optional auto path
- * `/categories/{slug}.jpg` when VITE_CATEGORY_IMAGES_AUTO=true.
+ * Prefer VITE_CATEGORY_IMAGE_MAP_JSON entries, then defaults above.
+ * Optional auto path `/categories/{slug}.jpg` when VITE_CATEGORY_IMAGES_AUTO=true.
  */
 export function resolveCategoryImageUrl(category) {
   if (!category) {

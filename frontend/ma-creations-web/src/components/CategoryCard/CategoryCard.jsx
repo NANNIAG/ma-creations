@@ -11,8 +11,8 @@ const tileColors = [
 ]
 
 /**
- * Category tile. Optional local image from public/categories/{slug}.jpg
- * (or VITE_CATEGORY_IMAGE_MAP_JSON). Falls back to color circle — no invented photos.
+ * Category tile. Default local images under public/categories/
+ * (hydration.png, lunch.png, … — see brand.js). Falls back to color circle on miss.
  */
 export default function CategoryCard({ category, index = 0 }) {
   const [imageFailed, setImageFailed] = useState(false)

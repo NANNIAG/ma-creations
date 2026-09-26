@@ -1,21 +1,11 @@
-# Branding assets (client-provided)
+# Branding assets (legacy folder)
 
-## Logo
+**Prefer:** place the storefront logo at `public/logo/logo.png` (see `public/logo/README.md`).
 
-1. Place the final logo file here, e.g.:
-   - `logo.svg` (preferred)
-   - `logo.png`
-   - `logo.webp`
-2. In `.env.local` set:
+This `branding/` folder remains for any older assets. Optional override:
 
 ```env
-VITE_BRAND_LOGO_URL=/branding/logo.svg
+VITE_BRAND_LOGO_URL=/branding/logo.png
 ```
 
-3. Restart `npm run dev`.
-
-Until a logo is provided, the UI shows the **MA CREATIONS** text wordmark (no fake logo).
-
-Recommended: transparent background, height ~64–128px for crisp retina display.
-
-Current storefront logo: `logo.png` (black knocked out for cream header). Full lockup also kept as `logo-full.png`.
+Until a logo file loads successfully, the UI shows the **MA CREATIONS** text wordmark.

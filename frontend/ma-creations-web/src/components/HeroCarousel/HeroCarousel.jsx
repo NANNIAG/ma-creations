@@ -9,13 +9,16 @@ import {
 } from '../../config/hero'
 
 /**
- * Asset-driven hero. Without client images, shows gradient placeholders only.
+ * Asset-driven hero. Default images: /heroes/hero-1.png … hero-3.png.
+ * Missing files fall back to gradient placeholders; carousel keeps working.
  * fullBleed slides show the designed banner uncropped (CTA in the art stays visible).
  */
 export default function HeroCarousel() {
   const navigate = useNavigate()
   const slides = getHeroSlides()
   const [index, setIndex] = useState(0)
+  const [loadedImages, setLoadedImages] = useState({})
+  const [failedImages, setFailedImages] = useState({})
   const shopNowTarget = getShopNowTarget()
 
   useEffect(() => {
@@ -30,6 +33,9 @@ export default function HeroCarousel() {
 
   const slide = slides[index] || slides[0]
   const activeTarget = slide?.href || shopNowTarget
+  const slideId = slide?.id
+  const imageSrc = slide?.image && !failedImages[slideId] ? slide.image : null
+  const hasRealImage = Boolean(imageSrc && loadedImages[slideId])
 
   function handleShopNow() {
     if (isHashTarget(activeTarget)) {
@@ -41,7 +47,6 @@ export default function HeroCarousel() {
     }
   }
 
-  const hasRealImage = Boolean(slide?.image)
   const fullBleed = Boolean(slide?.fullBleed && hasRealImage)
   const showText = !fullBleed && Boolean(slide?.title)
   const ctaLabel = slide?.ariaLabel || 'Shop Now'
@@ -69,12 +74,25 @@ export default function HeroCarousel() {
     </div>
   )
 
+  const preloadImg =
+    imageSrc && !hasRealImage ? (
+      <img
+        src={imageSrc}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute h-0 w-0 opacity-0"
+        onLoad={() => setLoadedImages((prev) => ({ ...prev, [slideId]: true }))}
+        onError={() => setFailedImages((prev) => ({ ...prev, [slideId]: true }))}
+      />
+    ) : null
+
   return (
     <section className="relative" aria-roledescription="carousel" aria-label="Featured">
+      {preloadImg}
       {fullBleed ? (
         <div className="relative w-full bg-ma-bg">
           <img
-            src={slide.image}
+            src={imageSrc}
             alt={slide.title || 'MA CREATIONS'}
             className="block h-auto w-full"
             loading={index === 0 ? 'eager' : 'lazy'}
@@ -94,7 +112,7 @@ export default function HeroCarousel() {
         >
           {hasRealImage && (
             <img
-              src={slide.image}
+              src={imageSrc}
               alt={slide.title || 'MA CREATIONS'}
               className="absolute inset-0 h-full w-full object-cover"
               loading={index === 0 ? 'eager' : 'lazy'}
